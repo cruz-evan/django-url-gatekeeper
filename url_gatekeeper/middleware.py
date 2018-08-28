@@ -14,11 +14,11 @@ def permissions_required_with_403(perms, request):
     (b) requires all permissions listed
     """
     def _checkperm(user, perm):
-        return (user.has_perm(perm)
-                or (perm == 'is_authenticated' and user.is_authenticated())
+        return ((perm == 'is_authenticated' and user.is_authenticated())
                 # Handles, say, is_staff; insist on True so that we
                 # don't inadvertently match a function.
-                or (True == getattr(user, perm, None)))
+                or (True == getattr(user, perm, None))
+                or user.has_perm(perm))
 
     for perm in perms:
         if not _checkperm(request.user, perm):
